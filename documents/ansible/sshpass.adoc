@@ -1,0 +1,101 @@
+= SSHPASS
+
+== Définition
+
+sshpass est un utilitaire qui permet de passer un mot de passe à une connexion SSH de manière non interactive. 
+
+
+Il est souvent utilisé pour automatiser des tâches SSH où il est nécessaire de fournir un mot de passe de manière scriptée. 
+
+
+En général, sshpass est utilisé dans des environnements où l'utilisation des clés SSH n'est pas possible ou souhaitée.
+
+== Pourquoi utiliser sshpass ?
+
+=== Automatisation : 
+
+Dans des scripts ou des systèmes automatisés où il est nécessaire de se connecter à des serveurs distants sans interaction utilisateur.
+
+
+=== Tests ou Déploiement : 
+
+Lors de tests rapides ou de déploiements où les clés SSH ne sont pas configurées, mais où une connexion SSH est nécessaire.
+
+
+=== Installation de sshpass
+
+
+Si vous devez installer sshpass dans un conteneur ou une machine, voici comment le faire :
+
+Dans un conteneur Docker (comme dans votre cas) :
+
+Ajoutez la commande d'installation à votre Dockerfile :
+
+[source, yaml]
+----
+# Dockerfile
+FROM ubuntu:latest
+
+# Mettre à jour le système et installer les dépendances
+RUN apt-get update && apt-get install -y \
+    software-properties-common \
+    sshpass \
+    ansible \
+    python-virtualenv \
+    && apt-get clean
+
+# Définir le point d'entrée
+CMD ["bash"]
+----
+Recréez et redémarrez le conteneur après avoir modifié le Dockerfile :
+
+[source, sh]
+----
+docker-compose build
+docker-compose up -d
+----
+
+Sur une machine Ubuntu :
+
+Installez sshpass en utilisant apt-get :
+
+[source, sh]
+----
+sudo apt-get update
+sudo apt-get install -y sshpass
+
+----
+
+
+
+== Utilisation de sshpass
+
+Voici comment utiliser sshpass pour se connecter à un serveur SSH en fournissant le mot de passe directement :
+
+
+[source, sh]
+----
+sshpass -p 'votre_mot_de_passe' ssh utilisateur@serveur
+----
+
+Exemple de script utilisant sshpass
+
+
+Si vous avez besoin d'utiliser sshpass dans un script pour automatiser une connexion SSH, voici un exemple :
+
+[source, bash]
+----
+#!/bin/bash
+
+# Variables
+USER="votre_utilisateur"
+HOST="votre_serveur"
+PASSWORD="votre_mot_de_passe"
+
+# Connexion SSH avec sshpass
+sshpass -p "$PASSWORD" ssh "$USER@$HOST" << 'ENDSSH'
+  echo "Connexion réussie !"
+  # Exécuter des commandes à distance ici
+  ls -l
+ENDSSH
+----

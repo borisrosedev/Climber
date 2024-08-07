@@ -1,0 +1,7 @@
+= Serveur de référence
+
+Quand vous apprenez vous utilisez votre ordinateur comme Node Manager. 
+
+Mais en pratique, il est conseillé d’avoir un serveur de référence sur lequel vous configurez un environnement d'automatisation toujours opérationnel et sécurisé, capable de se connecter aux nodes de votre infrastructure. 
+
+De plus, si vous travaillez à plusieurs sur l’infrastructure de l’entreprise avec Ansible, c’est beaucoup plus simple de contrôler les accès et les scripts depuis un point unique.

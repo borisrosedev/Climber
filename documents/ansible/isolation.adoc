@@ -1,0 +1,63 @@
+= Installez Ansible
+
+== Installez Ansible sur le node manager
+
+Vous allez installer Ansible sur votre node manager. 
+
+Il y a plusieurs façons d’installer Ansible notamment :
+
+- via **pip** de **Python** dans un **virtualenv** ou pas ;
+
+**Ansible** peut être installé avec ces trois méthodes nativement sur des systèmes de type **UNIX** (Linux ou macOS).
+
+Pour Windows, il faudra passer par un émulateur Unix de type Cygwin pour installer Ansible.
+
+== Installez les prérequis
+
+L’installation de Ansible sur le node manager (un serveur **Debian**) se fera avec la méthode **pip** de **Python** dans un **virtualenv**.
+
+Un **virtualenv** est un **outil Python** qui permet de créer des environnements de travail virtuels isolés. 
+
+Virtualenv crée un dossier qui contient les fichiers exécutables **Python**, et une copie de la bibliothèque **pip**.
+
+pip est un système de gestion de paquets utilisé pour installer et gérer les paquets logiciels écrits en **Python**.
+
+
+=== Isolation
+
+Avec cette méthode, vous créez un environnement de travail virtuel cloisonné, dans lequel vous pourrez installer la version Ansible de votre choix (basée sur le [release repository](https://releases.ansible.com/ansible/) de Ansible).
+
+À chaque sortie de la dernière version de Ansible, il y a des nouveautés et des dépréciations ; il est donc important de tester la compatibilité de vos scripts avant de mettre à jour les outils Ansible. 
+
+Avec virtualenv c’est très pratique. 
+
+Par exemple, vous pouvez créer un virtualenv par version de Ansible.
+
+Sur Debian par exemple, le paquet disponible pour installer Ansible n’est pas la toute dernière version (Debian privilégie la sécurité et la stabilité plutôt que la nouveauté, c’est un parti pris !). 
+
+C’est parfois un inconvénient quand on attendait une fonctionnalité tout juste sortie mais non disponible en upgrade sur Debian. 
+
+La méthode pip permet de s’en affranchir et de disposer de la dernière version de Ansible.
+
+Connectez-vous sur le node manager en root :
+
+```
+$ ssh seb@192.168.122.10 Linux node-manager 5.10.0-11-amd64 #1
+SMP Debian 5.10.92-1 (2022-01-18) x86_64
+
+The programs included with the Debian GNU/Linux system are free software; the exact distribution terms for each program are described in the individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linus comes with ABSOLUTELY NO WARRANTY, to the extent permitted by applicable law.
+boris@node-manager:~$ su - root
+Mot de passe : root@node-manager:~#
+```
+
+Installez le paquet **python-virtualenv**, ce qui permettra de créer des environnement de travail virtuel : **virtualenv**.
+
+Vous profiterez d’installer le paquet **sshpass** qui servira ultérieurement pour se connecter en **SSH** avec Ansible.
+
+```
+$ apt install python3.11-venv sshpass
+```
+
+À la question "Continuer ?", répondez **0ui**, et l’installation de **python-virtualenv** et **sshpass** se lance.

@@ -1,0 +1,55 @@
+{
+  "name": "climber",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "format:write":"prettier --write .",
+    "format:check":"prettier --check .",
+    "dev": "webpack serve --open"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@babel/eslint-parser": "^7.25.1",
+    "@babel/preset-env": "^7.25.3",
+    "@babel/preset-typescript": "^7.24.7",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.4.8",
+    "@testing-library/user-event": "^14.5.2",
+    "coffee-loader": "^5.0.0",
+    "coffeescript": "^2.7.0",
+    "copy-webpack-plugin": "^12.0.2",
+    "css-loader": "^7.1.2",
+    "eslint": "^9.8.0",
+    "eslint-plugin-github": "^5.0.1",
+    "eslint-plugin-jest": "^28.7.0",
+    "html-webpack-plugin": "^5.6.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "prettier": "^3.3.3",
+    "sass": "^1.77.8",
+    "sass-loader": "^16.0.0",
+    "style-loader": "^4.0.0",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.5.4",
+    "webpack": "^5.93.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.0.4"
+  },
+  "jest": {
+    "testMatch": ["**/*.test.jest"],
+    "testPathIgnorePatterns": [
+        "/node_modules",
+        "/dist"
+    ],
+    "testEnvironment": "jsdom",
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "/app/ts/**"
+    ]
+  }
+}

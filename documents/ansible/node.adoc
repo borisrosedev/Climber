@@ -1,0 +1,24 @@
+= Un node
+
+Un node (ou managed node, ou host) est un poste connecté au node manager en SSH, et sur lequel Ansible viendra pousser les tâches d’automatisation. 
+
+Ansible n’est pas installé sur les nodes.
+
+== Un node manager
+
+Un node manager, ou control node, est un poste qui contrôle les nodes grâce à sa connexion SSH. 
+
+Il dispose d'une version Ansible installé pour leur pousser les tâches d’automatisation grâce :
+- aux commandes ansible 
+- aux commandes ansible-playbook. 
+
+
+Cela peut être n’importe quelle machine Linux, mais pas Windows.
+
+
+Le node manager et les nodes peuvent avoir des systèmes d’exploitation différents. 
+
+Le node manager peut être un système Debian, et les nodes peuvent être des systèmes Centos, Windows, Ubuntu ou autre. 
+
+
+Il n’y a pas de corrélation entre le système du node manager et le système des nodes.

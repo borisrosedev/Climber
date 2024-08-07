@@ -1,0 +1,234 @@
+= Installez Ansible
+
+== Installez Ansible sur le node manager
+
+Vous allez installer Ansible sur votre node manager. 
+
+Il y a plusieurs façons d’installer Ansible :
+
+- via les **packages logiciels** sur un système Linux ;
+- via **pip** de **Python** dans un **virtualenv** ou pas ;
+- via les **sources officielles** (Archives ou Git) maintenues par Red Hat.
+
+**Ansible** peut être installé avec ces trois méthodes nativement sur des systèmes de type **UNIX** (Linux ou macOS).
+
+Pour Windows, il faudra passer par un émulateur Unix de type Cygwin pour installer Ansible.
+
+== Installez les prérequis
+
+L’installation de Ansible sur le node manager (un serveur **Debian**) se fera avec la méthode **pip** de **Python** dans un **virtualenv**.
+
+Un **virtualenv** est un **outil Python** qui permet de créer des environnements de travail virtuels isolés. 
+
+Virtualenv crée un dossier qui contient les fichiers exécutables **Python**, et une copie de la bibliothèque **pip**.
+
+pip est un système de gestion de paquets utilisé pour installer et gérer les paquets logiciels écrits en **Python**.
+
+Avec cette méthode, vous créez un environnement de travail virtuel cloisonné, dans lequel vous pourrez installer la version Ansible de votre choix (basée sur le [release repository](https://releases.ansible.com/ansible/) de Ansible).
+
+À chaque sortie de la dernière version de Ansible, il y a des nouveautés et des dépréciations ; il est donc important de tester la compatibilité de vos scripts avant de mettre à jour les outils Ansible. Avec virtualenv c’est très pratique. 
+
+Par exemple, vous pouvez créer un virtualenv par version de Ansible.
+
+Sur Debian par exemple, le paquet disponible pour installer Ansible n’est pas la toute dernière version (Debian privilégie la sécurité et la stabilité plutôt que la nouveauté, c’est un parti pris !). 
+
+C’est parfois un inconvénient quand on attendait une fonctionnalité tout juste sortie mais non disponible en upgrade sur Debian. La méthode pip permet de s’en affranchir et de disposer de la dernière version de Ansible.
+
+Connectez-vous sur le node manager en root :
+
+```
+$ ssh seb@192.168.122.10 Linux node-manager 5.10.0-11-amd64 #1
+SMP Debian 5.10.92-1 (2022-01-18) x86_64
+
+The programs included with the Debian GNU/Linux system are free software; the exact distribution terms for each program are described in the individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linus comes with ABSOLUTELY NO WARRANTY, to the extent permitted by applicable law.
+seb@node-manager:~$ su - root
+Mot de passe : root@node-manager:~#
+```
+
+Installez le paquet **python-virtualenv**, ce qui permettra de créer des environnement de travail virtuel : **virtualenv**.
+
+Vous profiterez d’installer le paquet **sshpass** qui servira ultérieurement pour se connecter en **SSH** avec Ansible.
+
+```
+$ apt install python3.11-venv sshpass
+```
+
+À la question "Continuer ?", répondez **0ui**, et l’installation de **python-virtualenv** et **sshpass** se lance.
+
+### **Créez un simple utilisateur**
+
+Pour ne pas travailler en **root** sur le node manager (ce n’est vraiment pas recommandé, le compte root peut tout faire sans aucune limite, une erreur est vite arrivée !), vous allez donc créer un simple utilisateur **user-ansible** :
+
+```
+# adduser user-ansible
+Ajout de l'utilisateur « user-ansible » ...
+Ajout du nouveau groupe « user-ansible » (1001) ...
+Ajout du nouvel utilisateur « user-ansible » (1001) avec le groupe « user-ansible » ...
+Création du répertoire personnel « /home/user-ansible »...
+Copie des fichiers depuis « /etc/skel »...
+Entrez le nouveau mot de passe UNIX :
+Retapez le nouveau mot de passe UNIX :
+passwd: password updated successfully
+Changing the user information for user-ansible
+Enter the new value, or press ENTER for the default
+ Full Name []: user-ansible
+ Room Number []:
+ Work Phone []:
+ Home Phone []:
+ Other []:
+Cette information est-elle correcte ? [O/n]
+```
+
+Entrez un mot de passe, confirmez-le, complétez les informations demandées, puis validez avec **Oui**.
+
+Maintenant que l’utilisateur est créé, vous pouvez l’utiliser avec la commande suivante :
+
+```
+# su - user-ansible
+user-ansible@node-manager:~$
+```
+
+Vous travaillez maintenant avec l’utilisateur **user-ansible** sur le **node-manager**.
+
+La ligne de commande commence par un **#** quand vous êtes en **root**, et par un **$** quand vous êtes en **simple utilisateur**.
+
+### **Créez votre environnement de travail virtuel**
+
+Comme indiqué plus haut,  vous utiliserez un **environnement de travail virtuel** pour cloisonner l’installation et l'exécution d'Ansible. Ceci permettra de gérer les dépendances avec la version de Python et d’installer une version particulière de Ansible.
+
+Vous allez installer la **dernière version en date de Ansible**.
+
+Vous créez alors un environnement de travail virtuel nommé **ansible**.
+
+Le nom est arbitraire. Vous pouvez mettre ce que vous voulez, mais donner du sens à ce que vous faites, c’est mieux.
+
+Sur le **node manager**, lancez la commande suivante :
+
+```
+user-ansible@node-manager:~$ virtualenv ansible
+created virtual environment CPython3.9.2.final.0-64 in 143ms
+ creator CPython3Posix(dest=/home/user-ansible/ansible, clear=False, no_vcs_ignore=False, global=False)
+ seeder FromAppData(download=False, pip=bundle, setuptools=bundle, wheel=bundle, via=copy, app_data_dir=/home/user-ansible/.local/share/virtualenv)
+added seed packages: pip==20.3.4, pkg_resources==0.0.0, setuptools==44.1.1, wheel==0.34.2
+ activators BashActivator,CShellActivator,FishActivator,PowerShellActivator,PythonActivator,XonshActivator
+```
+
+Vous utilisez la commande **virtualenv** pour créer l'environnement **ansible** dans lequel les outils, les ressources et le gestionnaire de paquets sont installés.
+
+Pour **activer** l'environnement virtuel, il faut activer la **source** :
+
+```
+$ user-ansible@node-manager:~$
+source ansible/bin/activate
+(ansible) user-ansible@node-manager:~$
+(ansible) user-ansible@node-manager:~$
+```
+
+Le prompt a changé au profit de  `(ansible) user-ansible@node-manager:~$`**.** Ce qui signifie que vous êtes dans l'environnement de travail virtuel **Ansible**.
+
+### **Installez Ansible dans votre environnement virtuel**
+
+Installez maintenant **Ansible** avec **pip** avec la commande suivante :
+
+```
+(ansible) user-ansible@node-manager:~$ pip install ansible
+Collecting ansible
+ Downloading ansible-5.3.0.tar.gz (38.0 MB)
+  |████████████████████████████████| 38.0 MB 4.6 MB/s
+Collecting ansible-core~=2.12.2
+ Downloading ansible-core-2.12.2.tar.gz (7.8 MB)
+  |████████████████████████████████| 7.8 MB 5.4 MB/s
+Collecting PyYAML
+ Downloading PyYAML-6.0-cp39-cp39-manylinux_2_5_x86_64.manylinux_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl (661 kB)
+  |████████████████████████████████| 661 kB 4.6 MB/s
+Collecting cryptography
+ Downloading cryptography-36.0.1-cp36-abi3-manylinux_2_24_x86_64.whl (3.6 MB)
+  |████████████████████████████████| 3.6 MB 4.6 MB/s
+Collecting jinja2
+ Downloading Jinja2-3.0.3-py3-none-any.whl (133 kB)
+  |████████████████████████████████| 133 kB 4.5 MB/s
+Collecting packaging
+ Downloading packaging-21.3-py3-none-any.whl (40 kB)
+  |████████████████████████████████| 40 kB 3.2 MB/s
+Collecting resolvelib<0.6.0,>=0.5.3
+ Downloading resolvelib-0.5.4-py2.py3-none-any.whl (12 kB)
+Collecting cffi>=1.12
+ Downloading cffi-1.15.0-cp39-cp39-manylinux_2_12_x86_64.manylinux2010_x86_64.whl (444 kB)
+  |████████████████████████████████| 444 kB 4.7 MB/s
+Collecting pycparser
+ Downloading pycparser-2.21-py2.py3-none-any.whl (118 kB)
+  |████████████████████████████████| 118 kB 4.6 MB/s
+Collecting MarkupSafe>=2.0
+ Downloading MarkupSafe-2.0.2-cp39-cp39-manylinux2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl (30 kB)
+Collecting pyparsing!=3.0.5,>=2.0.2
+ Downloading pyparsing-3.0.7-py3-none-any.whl (98 kB)
+  |████████████████████████████████| 98 kB 2.0 MB/s
+Building wheels for collected packages: ansible, ansible-core
+ Building wheel for ansible (setup.py) ... done
+ Created wheel for ansible: filename-ansible-5.3.0-py3-none-any.whl size=63194604 sha256=316aaaca8572c23ef102401b45f767980781721bcc061bc85ddb4c52cddc4c75
+ Stored in directory: /home/user-ansible/.cache/pip/wheels/56/28/79/5c9b383eaa4201d55d5496aa4f966afffc4a54c54de7b987aa
+ Building wheel for ansible-core (setup.py) ... done
+ Created wheel for ansible-core: filename=ansible_core-2.12.2-py3-none-any.whl size=2073804 sha256=bc1d4ad7c9f01baa1d45cbad925393171865ba3ae85155e85b486ed039266fdb
+ Stored in directory: /home/user-ansible/.cache/pip/wheels/08/5b/f9/4d61b8eb8920eee229f520e7f61027df5c13e433c09ade1e29
+Successfully built ansible ansible-core
+Installing collected packages: pycparser, pyparsing, MarkupSafe, cffi, resolvelib, PyYAML, packaging, jinja2, cryptography, ansible-core, ansible
+Successfully installed MarkupSafe-2.0.1 PyYAML-6.0 ansible-5.3.0 ansible-core-2.12.2 cffi-1.15.0 cryptography-36.0.1 jinja2-3.0.3 packaging-21.3 pycparser-2.21 pyparsing-3.0.7 resolvelib-0.5.4
+
+```
+
+Attention de bien vérifier que le prompt est bien **(ansible) user-ansible@node-manager:~$** avant de lancer les commandes.
+
+Vérifiez la **version de Ansible** avec la commande suivante :
+
+```
+(ansible) user-ansible@node-manager:~$ ansible --version
+ansible [core 2.12.2]
+ config file = None
+ configured module search path = ['/home/user-ansible/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+ ansible python module location = /home/user-ansible/ansible/lib/python3.9/site-packages/ansible
+ ansible collection location = /home/user-ansible/.ansible/collections:/usr/share/ansible/collections
+ executable location = /home/user-ansible/ansible/bin/ansible python version = 3.9.2 (default, Feb 28 2021, 17:03:44) [GCC 10.2.1 20210110]
+ jinja version = 3.0.3
+ libyaml = True
+```
+
+Tout est OK, Ansible est installé !
+
+### **Vérifiez votre installation**
+
+Dans le répertoire **bin** de votre environnement virtuel, vous pouvez constater que **11 outils** Ansible sont installés :
+
+```
+$ ls ansiblebin/ansible* -l
+ansible
+ansible-config
+ansible-connection
+ansible-console
+ansible-doc
+ansible-galaxy
+ansible-inventory
+ansible-playbook
+ansible-pull
+ansible-test
+ansible-vault
+```
+
+Regardons de plus près trois d’entre eux :
+
+- **ansible** : cette commande permet de lancer des actions Ansible en mode ad-hoc (en ligne de commande) ;
+- **ansible-config** : cette commande permet de manager la configuration de Ansible :
+    - si vous lancez la commande **$ ansible-config list**, vous allez lister la configuration de Ansible. Toutes ces variables sont contenues dans **./lib/pythonX.Y/site-packages/ansible/constants.py** ;
+- **ansible-doc** : cette commande permet d’obtenir de l’aide pour utiliser Ansible ; la documentation est très bien faite, c’est plutôt pratique pour se guider quand on commence, surtout que vous pouvez y trouver des exemples concrets.
+
+### **Résumé**
+
+**Dans ce chapitre**, vous avez  découvert l’automatisation avec Ansible, et plus particulièrement :
+
+- la **genèse** de **Ansible** ;
+- l’architecture Ansible avec le **node manager** et les **nodes** ;
+- comment installer Ansible dans un **environnement de travail virtuel** ;
+- **trois outils fondamentaux** qui composent une partie des outils Ansible.
+
+**Dans le prochain chapitre**, vous allez préparer la communication avec les nodes. Il s’agira de mettre en place les prérequis nécessaires pour établir la communication entre le node manager et les nodes.

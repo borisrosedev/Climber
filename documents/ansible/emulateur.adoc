@@ -1,0 +1,3 @@
+= Emulation Unix
+
+Pour Windows, il faudra passer par un émulateur Unix de type Cygwin pour installer Ansible.

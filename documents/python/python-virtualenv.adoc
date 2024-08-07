@@ -1,0 +1,117 @@
+= Python-virtualenv
+
+
+Pour se connecter à un conteneur en tant que root et installer python-virtualenv ou tout autre logiciel, vous pouvez utiliser Docker avec les commandes appropriées.
+
+
+
+Étapes pour se connecter au conteneur en tant que root
+
+== Démarrer le conteneur avec Docker Compose :
+
+Assurez-vous que votre conteneur est démarré avec Docker Compose en utilisant un fichier docker-compose.yml similaire à celui que vous avez déjà :
+
+
+[source, yaml]
+----
+yaml
+Copier le code
+version: '3'
+
+services:
+  ansible_manager:
+    build: .
+    container_name: ansible_manager
+    volumes:
+      - ./ansible:/etc/ansible  # Monte un volume pour vos fichiers Ansible
+    networks:
+      - ansible_net
+
+networks:
+  ansible_net:
+    driver: bridge
+
+----
+
+== Démarrer le conteneur
+
+[source, sh]
+----
+docker-compose up -d
+----
+
+
+Se connecter au conteneur en tant que root :
+
+Utilisez la commande docker exec pour accéder au conteneur en tant que root :
+
+[source, sh]
+----
+docker exec -it ansible_manager bash
+----
+
+Installer python-virtualenv dans le conteneur
+
+Une fois connecté au conteneur, vous pouvez installer python-virtualenv en suivant les étapes ci-dessous :
+
+Mettre à jour les packages :
+
+[source, sh]
+----
+apt-get update
+----
+
+
+Installer python-virtualenv :
+
+[source, sh]
+----
+apt-get install -y python-virtualenv
+----
+
+Exemple complet de Dockerfile pour inclure python-virtualenv
+
+Vous pouvez également ajouter l'installation de python-virtualenv directement dans votre Dockerfile pour automatiser cette étape chaque fois que le conteneur est construit :
+
+[source, yaml]
+----
+# Dockerfile
+FROM ubuntu:latest
+
+# Mettre à jour le système et installer les dépendances
+RUN apt-get update && apt-get install -y \
+    software-properties-common \
+    && apt-add-repository --yes --update ppa:ansible/ansible \
+    && apt-get install -y ansible python-virtualenv \
+    && apt-get clean
+
+# Copier les fichiers Ansible nécessaires (optionnel)
+# COPY ./ansible /etc/ansible
+
+# Définir le point d'entrée
+CMD ["bash"]
+----
+
+
+== Recréer et démarrer le conteneur avec les modifications
+
+Après avoir modifié le Dockerfile, reconstruisez l'image et redémarrez le conteneur :
+
+Recréer l'image :
+
+[source, sh]
+----
+docker-compose build
+----
+
+Redémarrer le conteneur :
+
+[source, sh]
+----
+docker-compose up -d
+----
+
+
+== Conclusion
+
+En suivant ces étapes, vous pouvez vous connecter à votre conteneur en tant que root, installer python-virtualenv ou tout autre logiciel nécessaire, et automatiser cette installation dans le Dockerfile pour simplifier les futurs déploiements.

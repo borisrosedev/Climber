@@ -1,0 +1,22 @@
+= Infrastructure 
+
+
+== Gestion avec le Node Manager
+
+Imaginons la situation suivante: le sysadmin de vous crée en plus un nouveau serveur Debian 11, qui deviendra le node manager.
+
+Le sysadmin est disponible pour le faire tout de suite et en profite pour vous fournir les adresses IP de tous les serveurs et leurs comptes root.
+
+Vous allez pouvoir travailler sur le node manager :
+
+- node manager: 192.168.122.10 (Debian 11) ;
+- serveur 1: 192.168.122.11 (Debian 11) ;
+- serveur 2: 192.168.122.12 (Debian 11).
+
+
+Vous devez avoir 3 serveurs disponibles qui communiquent sur le sous-réseau 192.168.122.0/24 et qui sont capables de sortir et de résoudre sur Internet.
+
+Le node manager va donc être votre tour de contrôle. 
+
+Vous allez y installer Ansible et tous ses outils, pour déployer automatiquement MediaWiki sur les nodes.
+

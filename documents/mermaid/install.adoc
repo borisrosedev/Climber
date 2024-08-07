@@ -1,0 +1,16 @@
+= Mermaid
+
+
+== Installation 
+[source, bash]
+----
+npm install -g @mermaid-js/mermaid-cli
+----
+
+
+== Utilisation
+
+[source, bash]
+----
+mmdc -i input.mmd -o output.svg
+----
