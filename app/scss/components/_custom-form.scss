@@ -1,19 +1,18 @@
 @use "../abstracts/mixins";
 
 .custom-form {
-    padding: 10px;
-    & > section:first-of-type {
-        @include mixins.create-flex(column) 
-    }
+	padding: 10px;
+	& > section:first-of-type {
+		@include mixins.create-flex(column);
+	}
 
-    & > section:nth-last-of-type(2) {
-        @include mixins.create-flex(row, center);
-        justify-content: space-between;
-    }
+	& > section:nth-last-of-type(2) {
+		@include mixins.create-flex(row, center);
+		justify-content: space-between;
+	}
 
-    & > section:last-of-type {
-        @include mixins.create-flex();
-        padding: 2px
-    }
-
+	& > section:last-of-type {
+		@include mixins.create-flex();
+		padding: 2px;
+	}
 }

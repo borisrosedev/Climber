@@ -1,11 +1,11 @@
-version: '3'
+version: "3"
 
 services:
   ansible_manager:
     build: .
     container_name: ansible_manager
     volumes:
-      - ./ansible:/etc/ansible  # Monte un volume pour les fichiers Ansible
+      - ./ansible:/etc/ansible # Monte un volume pour les fichiers Ansible
     networks:
       - ansible_net
 

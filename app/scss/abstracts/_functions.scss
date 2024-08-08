@@ -1,0 +1,23 @@
+@function inverse($val) {
+	@if $val == 0 {
+		@return 1;
+	} @else {
+		@return 0;
+	}
+}
+
+@function change-position($val, $final) {
+	@if $val > 0 {
+		@return 0;
+	}
+
+	@if $val < 0 {
+		@return 0;
+	}
+
+	@if $val == 0 {
+		@return $final;
+	}
+
+	@return 0;
+}

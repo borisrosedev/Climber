@@ -1,10 +1,10 @@
-import button from "../../components/button/button";
+import button from "../../components/button/button"
 
-function homeView () {
-    return `
+function homeView() {
+	return `
         <main class="custom-main home__main">
             <section>
-                ${button({ textContent: "Se connecter", id: "home-login-button"})}
+                ${button({ textContent: "Se connecter", id: "home-login-button" })}
             </section>
         </main>
     `

@@ -6,6 +6,7 @@
 
 //abstracts
 @use "./app/scss/abstracts/variables";
+@use "./app/scss/abstracts/functions";
 @use "./app/scss/abstracts/extensions";
 @use "./app/scss/abstracts/mixins";
 
@@ -14,3 +15,13 @@
 
 //layout
 @use "./app/scss/layout/app-header";
+@use "./app/scss/layout/app-notification";
+
+//components
+@use "./app/scss/components/custom-button";
+@use "./app/scss/components/custom-form";
+
+//pages
+@use "./app/scss/pages/home";
+@use "./app/scss/pages/log";
+@use "./app/scss/pages/not-found";

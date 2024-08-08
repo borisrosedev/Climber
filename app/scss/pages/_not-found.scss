@@ -1,7 +1,7 @@
 @use "../abstracts/mixins";
 
 .not-found {
-    &__main {
-        @include mixins.set-bg()
-    }
+	&__main {
+		@include mixins.set-bg();
+	}
 }

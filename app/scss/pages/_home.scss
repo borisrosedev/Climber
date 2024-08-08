@@ -1,7 +1,15 @@
 @use "../abstracts/mixins";
+@use "../abstracts/keyframes";
 
 .home {
-    &__main {
-        @include mixins.set-bg()
-    }
+	&__main {
+		@include mixins.set-bg();
+		@include mixins.create-flex(column, center);
+		justify-content: center;
+
+		button {
+			opacity: 0;
+			animation: show 500ms 1s ease-in-out forwards;
+		}
+	}
 }

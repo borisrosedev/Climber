@@ -1,81 +1,68 @@
 @use "./extensions";
+@use "./functions";
 
-@mixin create-flex ($dir: row, $align: flex-start) {
-    display: flex;
-    flex-direction: $dir;
-    align-items: $align;
+@mixin create-flex($dir: row, $align: flex-start) {
+	display: flex;
+	flex-direction: $dir;
+	align-items: $align;
 }
 
-@mixin set-bg ($darken: false, $alpha: 0.5) {
-    @if $darken == true {
-        background-blend-mode: color;
-        background-color: rgba($color: #000000, $alpha: $alpha);
-    }
-    @extend %bg
+@mixin set-bg($darken: false, $alpha: 0.5) {
+	@if $darken == true {
+		background-blend-mode: color;
+		background-color: rgba($color: #000000, $alpha: $alpha);
+	}
+	@extend %bg;
 }
 
-@mixin set-position($pos: fixed, $isOnTop: true, $b: 10px){
-    position: fixed;
-    @if $isOnTop == true {
-        top: 0;
-        left: 0;
-        right: 0;
-    }
-    bottom: $b; 
+@mixin set-position($pos: fixed, $isOnTop: true, $b: 10px) {
+	position: fixed;
+	@if $isOnTop == true {
+		top: 0;
+		left: 0;
+		right: 0;
+	}
+	bottom: $b;
 }
 
+@mixin set-anim(
+	$alpha: 0,
+	$move,
+	$name,
+	$y: 0,
+	$x: 0,
+	$time: 300ms,
+	$delay: 0ms,
+	$final
+) {
+	opacity: $alpha;
+	animation-name: $name;
+	animation-duration: $time;
+	animation-timing-function: ease-in-out;
+	animation-delay: $delay;
+	animation-fill-mode: forwards;
 
-
-@mixin set-anim ($alpha: 0, $move: vertical, $y: 0, $x: 0, $time: 300ms, $delay: 0, $final) {
-    opacity: $alpha;
-    animation-name: $move;
-    animation-duration: $time;
-    animation-delay: $delay;
-    animation-fill-mode: forwards;
-
-    @function inverse ($val: 0) {
-        @if $val == 0 {
-            @return 1;
-        } @else {
-            @return 0;
-        }
-    }
-
-    @function change-position ($val, $final) {
-        @if $val > 0 {
-            @return 0;
-        } 
-
-        @if $val > 0 {
-            @return 0;
-        }
-
-        @if $val == 0 {
-            @return $final
-        }
-    }
-
-    @keyframes vertical {
-        from {
-            opacity: $alpha;
-            transform: translateY($y);
-        }
-        to {
-            opacity: inverse($alpha);
-            transform: translateY(change-position($y));
-        }
-    }
-
-    @keyframes horizontal {
-        from {
-            opacity: $alpha;
-            transform: translateX($x);
-        }
-        to {
-            opacity: inverse($alpha);
-            transform: translateX(change-position($x));
-        }
-    }
-
-   
+	@if $move == vertical {
+		@keyframes #{$name} {
+			from {
+				opacity: $alpha;
+				transform: translateY($y);
+			}
+			to {
+				opacity: functions.inverse($alpha);
+				transform: translateY(functions.change-position($y, $final));
+			}
+		}
+	} @else {
+		@keyframes #{name} {
+			from {
+				opacity: $alpha;
+				transform: translateX($x);
+			}
+			to {
+				opacity: functions.inverse($alpha);
+				transform: translateX(functions.change-position($x, $final));
+			}
+		}
+	}
 }

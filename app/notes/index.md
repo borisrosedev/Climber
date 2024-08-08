@@ -6,8 +6,7 @@
 ```html
 <script async src="https://cdn.ampproject.org/v0.js"></script>
 <script
-    src="https://kit.fontawesome.com/1b1fa6fbda.js"
-    crossorigin="anonymous"
->
-</script>
+	src="https://kit.fontawesome.com/1b1fa6fbda.js"
+	crossorigin="anonymous"
+></script>
 ```

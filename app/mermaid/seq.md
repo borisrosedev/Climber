@@ -1,4 +1,5 @@
 ### Sequence
+
 ```mermaid
 sequenceDiagram
     actor User
