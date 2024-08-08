@@ -55,7 +55,7 @@
     "testEnvironment": "jsdom",
     "collectCoverage": true,
     "collectCoverageFrom": [
-      "./app/ts/**"
+      "./app/ts/**/*.ts"
     ]
   }
 }
