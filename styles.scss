@@ -1,0 +1,16 @@
+//vender
+@use "./app/scss/vendor/bulma";
+
+//tipo
+@use "./app/scss/base/tipography";
+
+//abstracts
+@use "./app/scss/abstracts/variables";
+@use "./app/scss/abstracts/extensions";
+@use "./app/scss/abstracts/mixins";
+
+//base
+@use "./app/scss/base/base";
+
+//layout
+@use "./app/scss/layout/app-header";

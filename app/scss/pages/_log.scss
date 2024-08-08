@@ -1,0 +1,7 @@
+@use "../abstracts/mixins";
+
+.log {
+    &__main {
+        @include mixins.set-bg(true)
+    }  
+}

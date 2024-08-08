@@ -1,0 +1,8 @@
+@use "../abstracts/mixins";
+
+.app-notification {
+    @include mixins.set-position(fixed, false);
+    & > small {
+        @include  mixins.set-anim(0, vertical, 0, 0, 1000, 0, 300px)
+    }
+}

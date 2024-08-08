@@ -5,7 +5,7 @@ services:
     build: .
     container_name: ansible_manager
     volumes:
-      - ./ansible:/etc/ansible  # Monte un volume pour vos fichiers Ansible
+      - ./ansible:/etc/ansible  # Monte un volume pour les fichiers Ansible
     networks:
       - ansible_net
 

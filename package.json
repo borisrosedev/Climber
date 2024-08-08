@@ -4,8 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "format:write":"prettier --write .",
-    "format:check":"prettier --check .",
+    "format:write": "prettier --write .",
+    "format:check": "prettier --check .",
     "dev": "webpack serve --open"
   },
   "keywords": [],
@@ -20,6 +20,7 @@
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.4.8",
     "@testing-library/user-event": "^14.5.2",
+    "@types/jest": "^29.5.12",
     "coffee-loader": "^5.0.0",
     "coffeescript": "^2.7.0",
     "copy-webpack-plugin": "^12.0.2",
@@ -41,15 +42,20 @@
     "webpack-dev-server": "^5.0.4"
   },
   "jest": {
-    "testMatch": ["**/*.test.jest"],
+    "setupFiles": [
+      "./app/__test__/setup-jest.ts"
+    ],
+    "testMatch": [
+      "**/*.test.ts"
+    ],
     "testPathIgnorePatterns": [
-        "/node_modules",
-        "/dist"
+      "/node_modules",
+      "/dist"
     ],
     "testEnvironment": "jsdom",
     "collectCoverage": true,
     "collectCoverageFrom": [
-      "/app/ts/**"
+      "./app/ts/**"
     ]
   }
 }

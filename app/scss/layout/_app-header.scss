@@ -1,0 +1,11 @@
+@use "../abstracts/mixins";
+
+.app-header {
+    @include mixins.create-flex(row, center);
+    justify-content: space-between;
+    padding-inline: 10px;
+    @include mixins.set-position(fixed, true);
+    box-shadow: 0 0 5px;
+    height: 8vh;
+    
+}
