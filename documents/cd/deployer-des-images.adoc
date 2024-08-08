@@ -1,0 +1,96 @@
+
+= Déployer les images précédemment compilées sur un environnement Docker, grâce au pipeline de livraison continue. 
+
+
+Puis, nous lancerons les tests grâce à la méthode **Canary Release**.
+
+Afin de vous faciliter la tâche et de ne pas installer des dépendances inutiles, je vous conseille de créer un environnement sur le site [Play-With-Docker](https://labs.play-with-docker.com/). 
+
+Ce site va vous permettre de créer une infrastructure Docker rapidement. 
+
+Rendez-vous sur le site et connectez-vous avec vos identifiants Docker Hub.
+
+Une fois connecté, une session de 4 heures est créée afin de vous permettre de déployer vos images. 
+
+Sur la page d’accueil, cliquez sur l’icône 🔧 et sélectionnez le template 3 Managers and 2 Workers.
+
+Création de l’environnement de déploiement de l'application MatchUp dans Play-with-Docker
+
+Cela va vous créer un cluster Docker Swarm, nécessaire au déploiement des images. 
+
+Une fois le cluster créé, vous allez récupérer l’URL de l’environnement. 
+
+Il suffit de copier l’URL présente dans la case SSH.
+
+Copiez l’URL SSH de votre Docker Swarm sur le Play-With-Docker
+
+Cette URL sera utilisée pour configurer l’environnement de déploiement dans le fichier .gitlab-ci.yml.
+
+== Déployez en environnement de préproduction
+
+Maintenant que vous avez copié l’URL de votre Docker Swarm, modifiez ce fichier pour ajouter deux nouvelles lignes. 
+
+La première ligne à ajouter est au niveau de`variables`. Cette nouvelle variable va contenir l’URL copiée précédemment :
+
+[source, bash]
+----
+PWD: ip289-38-1-51-dsdshm1
+----
+
+=== Deuxième ligne
+
+La deuxième ligne est à ajouter juste après l’étape`package`. 
+
+Cette étape supplémentaire sera le déploiement des images sur un environnement de staging :
+
+[source, yaml]
+----
+deploy_staging_job:
+  stage: deploy
+  image: alpine
+  script:
+    - apk add --no-cache docker-cli-compose
+    - export DOCKER_HOST=tcp://$PLAYWD.direct.labs.play-with-docker.com:2375
+    - docker compose down
+    - docker compose up -d
+  environment:
+    name: staging
+    url: http://$PLAYWD-8080.direct.labs.play-with-docker.com
+
+----
+
+
+
+La syntaxe est la même que les précédentes étapes. 
+
+Dans la partie script, nous avons ajouté la copie du fichier`docker-compose.yml`, ainsi que le dossier`docker`. 
+
+
+Enfin, nous démarrons le projet grâce à Docker Compose.
+
+Le but de déployer un environnement de staging est de valider les changements fait dans l’application dans un environnement **isoproduction**, c’est-à-dire qui réplique parfaitement les conditions de production des futurs changements. 
+
+
+C’est pourquoi livrer une mise à jour fonctionnelle grâce à des conteneurs est parfait, car le conteneur devient de plus en plus l’artéfact de livraison universel.
+
+De plus, nous pouvons ajouter des tests de bonne santé de l’application dans le fichier docker-compose.yaml avec le mot clé “healthcheck”. 
+
+
+Ces tests servent à savoir si l’application continue de bien fonctionner en exécutant une commande et en regardant le code de retour de l’application. Si ce code est en erreur, Docker Compose va alors redémarrer le conteneur automatiquement afin que l’application continue de fonctionner normalement.
+
+Certains tests nécessitent aussi le déploiement de l’application avant d’être lancés, comme les **tests de performance** que nous allons implémenter. 
+
+
+Ces tests servent à prendre des décisions basées sur des métriques. Dans le cas du test de performance, nous pouvons imaginer un changement important dans l’interface de l’application qui a des impacts sur la performance générale de l’application. Avec ce genre de test, si les métriques récupérées sont trop dégradées, nous allons pouvoir prendre une décision manuelle avant de pousser l’application en production. Dans le cas d’une dégradation importante de la performance, il faudra alors ouvrir un nouveau bug de performance et refuser la livraison en production de l’application.
+
+Grâce à nos pipelines de livraison continue et nos tests de performance lancés, nous allons alors pouvoir suivre l’évolution et la correction de ce bug avant qu’il n’atteigne des performances acceptables. Nous pourrons alors pousser ces changements manuellement en production grâce à notre chaîne DevOps.
+
+Si tout s’est bien passé, vous devriez voir apparaître dans vos environnements (Deployments > Environnements), le nouvel environnement **staging**.
+
+
+Votre nouvel environnement de staging
+
+Vous pouvez alors cliquer sur le lien "Open" sur la droite de cet environnement, afin de voir l’application déployée.
+
+
+Votre application déployée

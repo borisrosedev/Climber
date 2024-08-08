@@ -1,14 +1,11 @@
 = Alternatives à sshpass
-
-
-
 Si possible, il est recommandé d'utiliser des clés SSH pour l'authentification plutôt que des mots de passe en clair, pour des raisons de sécurité. 
 
 == Clés SSH : 
 
 Utiliser des clés SSH pour une connexion sécurisée sans mot de passe.
 
-ssh-agent et ssh-add : 
+== ssh-agent et ssh-add : 
 
 Gérer les clés SSH avec un agent pour éviter de taper le mot de passe à chaque connexion.
 

@@ -1,0 +1,20 @@
+= Tests de performance
+
+Certains tests nécessitent aussi le déploiement de l’application avant d’être lancés, comme les **tests de performance** que nous allons implémenter. 
+
+
+Ces tests servent à prendre des décisions basées sur des métriques. 
+
+
+Dans le cas du test de performance, nous pouvons imaginer un changement important dans l’interface de l’application qui a des impacts sur la performance générale de l’application. 
+
+Avec ce genre de test, si les métriques récupérées sont trop dégradées, nous allons pouvoir prendre une décision manuelle avant de pousser l’application en production. 
+
+Dans le cas d’une dégradation importante de la performance, il faudra alors ouvrir un nouveau bug de performance et refuser la livraison en production de l’application.
+
+Grâce à nos pipelines de livraison continue et nos tests de performance lancés, nous allons alors pouvoir suivre l’évolution et la correction de ce bug avant qu’il n’atteigne des performances acceptables. 
+
+
+Nous pourrons alors pousser ces changements manuellement en production grâce à notre chaîne DevOps.
+
+Si tout s’est bien passé, vous devriez voir apparaître dans vos environnements (Deployments > Environnements), le nouvel environnement **staging**.

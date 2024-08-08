@@ -1,0 +1,11 @@
+= Découvrez les tests d’acceptance**
+
+Les **tests d’acceptance** sont des tests formels exécutés pour vérifier si un système satisfait à ses exigences opérationnelles. 
+
+Ils exigent que l’application entière soit opérationnelle et se concentrent sur la réplication des comportements des utilisateurs. 
+
+Mais ils peuvent aussi aller plus loin, en mesurant la performance du système, et rejeter les changements si certains objectifs ne sont pas atteints.
+
+Ces tests peuvent être **automatisés**, mais aussi **manuels**, avec une équipe de test dédiée qui regardera si le logiciel correspond au besoin.
+
+Pour lancer des tests d’acceptance, vous pourrez utiliser **Confluence**, **FitNesse** ou **Ranorex**.

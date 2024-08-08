@@ -1,0 +1,8 @@
+= HealthCheck
+
+De plus, nous pouvons ajouter des tests de bonne santé de l’application dans le fichier docker-compose.yaml avec le mot clé “healthcheck”. 
+
+
+Ces tests servent à savoir si l’application continue de bien fonctionner en exécutant une commande et en regardant le code de retour de l’application. 
+
+Si ce code est en erreur, Docker Compose va alors redémarrer le conteneur automatiquement afin que l’application continue de fonctionner normalement.

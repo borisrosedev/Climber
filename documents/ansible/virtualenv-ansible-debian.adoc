@@ -1,0 +1,21 @@
+= L'intérêt d'un environnement de travail virtuel
+
+== Méthode
+
+Avec cette méthode, vous créez un environnement de travail virtuel cloisonné, dans lequel vous pourrez installer la version Ansible de votre choix (basée sur le [release repository](https://releases.ansible.com/ansible/) de Ansible).
+
+== version de Ansible
+
+À chaque sortie de la dernière version de Ansible, il y a des nouveautés et des dépréciations.
+
+=== Tester la compatibilité de vos scripts
+
+Il est donc important de tester la compatibilité de vos scripts avant de mettre à jour les outils Ansible. Avec virtualenv c’est très pratique. 
+
+Par exemple, vous pouvez créer un virtualenv par version de Ansible.
+
+== Debian
+
+Sur Debian par exemple, le paquet disponible pour installer Ansible n’est pas la toute dernière version (Debian privilégie la sécurité et la stabilité plutôt que la nouveauté, c’est un parti pris !). 
+
+C’est parfois un inconvénient quand on attendait une fonctionnalité tout juste sortie mais non disponible en upgrade sur Debian. La méthode pip permet de s’en affranchir et de disposer de la dernière version de Ansible.

@@ -1,0 +1,17 @@
+= Architecture technique et Ansible
+
+Notre architecture technique est pour le moment constituée de 2 serveurs. 
+
+Nous allons ajouter un nouveau serveur qui deviendra notre "tour de contrôle Ansible".
+
+Votre architecture ressemble donc maintenant au schéma suivant :
+
+- deux serveurs (Apache et MySQL). 
+
+Ces serveurs sont appelés des **nodes**;
+
+- un serveur de contrôle, appelé node manager. 
+
+C’est le serveur sur lequel seront installés les outils Ansible et depuis lequel, les opérations de configuration seront lancées à distance sur les nodes.
+
+

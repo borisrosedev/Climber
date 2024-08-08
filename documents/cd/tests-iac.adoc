@@ -1,0 +1,89 @@
+
+== **Découvrez les tests d’Infrastructure-as-Code**
+
+Les tests d’**Infrastructure-as-Code** ressemblent fortement aux tests de sécurité précédemment évoqués. Ces tests vont scanner vos fichiers d’Infrastructure-as-Code à la recherche de vulnérabilités connues et vous avertir le cas échéant.
+
+Ces tests permettent aussi de détecter des problèmes de configuration inhérents aux fichiers d’Infrastructure-as-Code grâce à un **linter** qui vous avertit si vos fichiers sont mal formatés ou contiennent des erreurs de configuration. 
+
+
+Un linter est un outil d’analyse de code qui permet de détecter les erreurs et les problèmes de syntaxe.
+
+Pour faire des tests d’Infrastructure-as-Code, vous pouvez utiliser **Gitlab**, **Checov** ou **TFLint**.
+
+Il faut alors ajouter de nouvelles lignes dans le fichier`.gitlab-ci.yml`, afin de lancer les tests de performance sur le nouvel environnement :
+
+```
+performance_job:
+  stage: performance
+  image: alpine
+  services:
+    - docker:dind
+  variables:
+    URL: http://$PLAYWD-8080.direct.labs.play-with-docker.com/
+    DOCKER_HOST: tcp://docker:2375
+  script:
+    - apk add --no-cache curl docker-cli
+    - x=1; while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://$PLAYWD-8080.direct.labs.play-with-docker.com/)" != "200" || $x -le 60 ]]; do sleep 5; echo $(( x++ )); done || false
+    - mkdir gitlab-exporter
+    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/master/index.js
+    - mkdir sitespeed-results
+    - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io --plugins.add ./gitlab-exporter --outputFolder sitespeed-results $URL
+    - mv sitespeed-results/data/performance.json performance.json
+  artifacts:
+    paths:
+      - sitespeed-results/
+    reports:
+      performance: performance.json
+
+```
+
+Dans ce nouveau bloc, la syntaxe reste la même. Nous récupérons dans un premier temps l’utilitaire de test de performance dans le bloc`script`. Nous lançons ensuite une application qui va se charger de tester notre site et d’en extraire des métriques de performance. Ces métriques sont ensuite uploadées sur GitLab afin d’être accessibles.
+
+Ensuite, modifiez aussi le début du fichier afin d’ajouter une nouvelle ligne dans le bloc`stages`:
+
+```
+stages:
+  - build
+  - test
+  - quality
+  - package
+  - deploy
+  - performance
+  - security
+
+```
+
+À la suite des tests de performance, nous allons lancer un **scan de sécurité** des images précédemment packagées afin de savoir si nos images contiennent des failles de sécurité. Nous allons pouvoir ensuite prendre des décisions quant au déploiement de nos images en production, basées sur le nombre de vulnérabilités de l’image. Par exemple, nous pouvons décider de ne pas déployer les images contenant une faille critique en production, mais de la déployer même si d’autres types de failles existent.
+
+Voici les changements à faire dans le`.gitlab-ci.yaml`afin de lancer un scan des images :
+
+```
+container_scanning:
+  stage: security
+  image:
+    name: aquasec/trivy:latest
+    entrypoint: [""]
+  services:
+    - docker:dind
+  variables:
+    GIT_STRATEGY: none
+    TRIVY_USERNAME: "$CI_REGISTRY_USER"
+    TRIVY_PASSWORD: "$CI_REGISTRY_PASSWORD"
+    TRIVY_AUTH_URL: "$CI_REGISTRY"
+    FULL_IMAGE_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    DOCKER_HOST: tcp://docker:2375
+  script:
+    - trivy image --clear-cache
+    - trivy image --exit-code 0 --cache-dir .trivycache/ --no-progress --format template --template "@/contrib/gitlab.tpl"
+        --output "$CI_PROJECT_DIR/gl-container-scanning-report.json" "$FULL_IMAGE_NAME"
+    - trivy image --exit-code 0 --cache-dir .trivycache/ --no-progress "$FULL_IMAGE_NAME"
+    - trivy image --exit-code 1 --cache-dir .trivycache/ --severity CRITICAL --no-progress "$FULL_IMAGE_NAME"
+  cache:
+    paths:
+      - .trivycache/
+  artifacts:
+    when: always
+    reports:
+      container_scanning: gl-container-scanning-report.json
+
+```

@@ -1,5 +1,5 @@
 import HomeContainer from "./app/ts/containers/home/home-container"
-import LogContainer from "./app/ts/containers/home/log-container"
+import LogContainer from "./app/ts/containers/log/log-container"
 import OnNavigate from "./app/ts/types/on-navigate.type"
 import appHeader from "./app/ts/ui/layout/app-header"
 import homeView from "./app/ts/ui/views/home/home.view"

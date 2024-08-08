@@ -1,0 +1,231 @@
+= **Lancez les tests automatisés**
+
+Maintenant que l’environnement **staging** est déployé, il est possible de lancer des tests impossibles à lancer lors de la phase d’intégration continue. Dans ce chapitre, nous allons lancer un **test de performance**, afin de mesurer les temps de réponse de l’application. Pour ce faire, vous allez utiliser **Apache Benchmark** pour simuler de la charge sur le serveur.
+
+Ces tests peuvent être de différents types.
+
+== **Découvrez les tests d’acceptance**
+
+Les **tests d’acceptance** sont des tests formels exécutés pour vérifier si un système satisfait à ses exigences opérationnelles. 
+
+
+Ils exigent que l’application entière soit opérationnelle et se concentrent sur la réplication des comportements des utilisateurs. 
+
+Mais ils peuvent aussi aller plus loin, en mesurant la performance du système, et rejeter les changements si certains objectifs ne sont pas atteints.
+
+Ces tests peuvent être **automatisés**, mais aussi **manuels**, avec une équipe de test dédiée qui regardera si le logiciel correspond au besoin.
+
+Pour lancer des tests d’acceptance, vous pourrez utiliser **Confluence**, **FitNesse** ou **Ranorex**.
+
+== **Découvrez les tests de performance**
+
+Les **tests de performance** vérifient le comportement du système lorsqu’il est soumis à une charge importante. Ces tests ne sont pas fonctionnels et peuvent prendre différentes formes pour comprendre la fiabilité, la stabilité et la disponibilité de la plateforme. Par exemple, il peut s’agir d’observer les temps de réponse lors de l’exécution d’un grand nombre de requêtes, ou de voir comment le système se comporte avec une quantité importante de données.
+
+Les tests de performance sont par nature assez coûteux à mettre en œuvre et à exécuter, mais ils peuvent vous aider à comprendre si de nouveaux changements vont dégrader votre système.
+
+Pour faire des tests de performance, vous pourrez utiliser **JMeter**, **Apache Bench** ou **Gatling**.
+
+### **Découvrez les smoke tests**
+
+Les **smoke tests** sont des tests de base qui vérifient les fonctionnalités de base de l’application. Ils sont conçus pour être rapides à exécuter et leur but est de vous donner l’assurance que les **principales caractéristiques de votre système fonctionnent comme prévu**. Ils peuvent être utiles juste après une nouvelle build, pour décider si vous pouvez ou non exécuter des tests plus coûteux, ou juste après un déploiement pour s’assurer que l’application fonctionne correctement dans le nouvel environnement déployé.
+
+Par exemple, les smoke tests peuvent s’assurer que la base de données répond et est correctement configurée, mais aussi que les différents composants sont présents et envoient des données correctes, comme des API qui devraient répondre un code HTTP 200 ou une page web qui devrait s’afficher.
+
+Pour vous assurer du bon fonctionnement de l’application, vous pourrez utiliser **Selenium**, **SoapUI** ou **Cypress**.
+
+### **Découvrez les tests de sécurité**
+
+Les **tests de sécurité** sont des tests qui découvrent les vulnérabilités du système et déterminent que les données et les ressources du système sont protégées contre d’éventuels intrus. Ils garantissent que le système et l’application logicielle sont exempts de toute menace ou tout risque pouvant entraîner une perte. Le test de sécurité d’un système vise à trouver toutes les failles et faiblesses possibles du système qui pourraient entraîner la perte d’informations ou de réputation de l’organisation.
+
+Pour faire des tests de sécurité, vous pouvez utiliser **Wapiti**, **Snyk** ou **ZAP (Zed Attack Proxy) d’OWASP**.
+
+== **Découvrez les tests d’Infrastructure-as-Code**
+
+Les tests d’**Infrastructure-as-Code** ressemblent fortement aux tests de sécurité précédemment évoqués. Ces tests vont scanner vos fichiers d’Infrastructure-as-Code à la recherche de vulnérabilités connues et vous avertir le cas échéant.
+
+Ces tests permettent aussi de détecter des problèmes de configuration inhérents aux fichiers d’Infrastructure-as-Code grâce à un **linter** qui vous avertit si vos fichiers sont mal formatés ou contiennent des erreurs de configuration. 
+
+
+Un linter est un outil d’analyse de code qui permet de détecter les erreurs et les problèmes de syntaxe.
+
+Pour faire des tests d’Infrastructure-as-Code, vous pouvez utiliser **Gitlab**, **Checov** ou **TFLint**.
+
+Il faut alors ajouter de nouvelles lignes dans le fichier`.gitlab-ci.yml`, afin de lancer les tests de performance sur le nouvel environnement :
+
+```
+performance_job:
+  stage: performance
+  image: alpine
+  services:
+    - docker:dind
+  variables:
+    URL: http://$PLAYWD-8080.direct.labs.play-with-docker.com/
+    DOCKER_HOST: tcp://docker:2375
+  script:
+    - apk add --no-cache curl docker-cli
+    - x=1; while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://$PLAYWD-8080.direct.labs.play-with-docker.com/)" != "200" || $x -le 60 ]]; do sleep 5; echo $(( x++ )); done || false
+    - mkdir gitlab-exporter
+    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/master/index.js
+    - mkdir sitespeed-results
+    - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io --plugins.add ./gitlab-exporter --outputFolder sitespeed-results $URL
+    - mv sitespeed-results/data/performance.json performance.json
+  artifacts:
+    paths:
+      - sitespeed-results/
+    reports:
+      performance: performance.json
+
+```
+
+Dans ce nouveau bloc, la syntaxe reste la même. Nous récupérons dans un premier temps l’utilitaire de test de performance dans le bloc`script`. Nous lançons ensuite une application qui va se charger de tester notre site et d’en extraire des métriques de performance. Ces métriques sont ensuite uploadées sur GitLab afin d’être accessibles.
+
+Ensuite, modifiez aussi le début du fichier afin d’ajouter une nouvelle ligne dans le bloc`stages`:
+
+```
+stages:
+  - build
+  - test
+  - quality
+  - package
+  - deploy
+  - performance
+  - security
+
+```
+
+À la suite des tests de performance, nous allons lancer un **scan de sécurité** des images précédemment packagées afin de savoir si nos images contiennent des failles de sécurité. Nous allons pouvoir ensuite prendre des décisions quant au déploiement de nos images en production, basées sur le nombre de vulnérabilités de l’image. Par exemple, nous pouvons décider de ne pas déployer les images contenant une faille critique en production, mais de la déployer même si d’autres types de failles existent.
+
+Voici les changements à faire dans le`.gitlab-ci.yaml`afin de lancer un scan des images :
+
+```
+container_scanning:
+  stage: security
+  image:
+    name: aquasec/trivy:latest
+    entrypoint: [""]
+  services:
+    - docker:dind
+  variables:
+    GIT_STRATEGY: none
+    TRIVY_USERNAME: "$CI_REGISTRY_USER"
+    TRIVY_PASSWORD: "$CI_REGISTRY_PASSWORD"
+    TRIVY_AUTH_URL: "$CI_REGISTRY"
+    FULL_IMAGE_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    DOCKER_HOST: tcp://docker:2375
+  script:
+    - trivy image --clear-cache
+    - trivy image --exit-code 0 --cache-dir .trivycache/ --no-progress --format template --template "@/contrib/gitlab.tpl"
+        --output "$CI_PROJECT_DIR/gl-container-scanning-report.json" "$FULL_IMAGE_NAME"
+    - trivy image --exit-code 0 --cache-dir .trivycache/ --no-progress "$FULL_IMAGE_NAME"
+    - trivy image --exit-code 1 --cache-dir .trivycache/ --severity CRITICAL --no-progress "$FULL_IMAGE_NAME"
+  cache:
+    paths:
+      - .trivycache/
+  artifacts:
+    when: always
+    reports:
+      container_scanning: gl-container-scanning-report.json
+
+```
+
+### **Déployez en environnement de production**
+
+### **Déployez votre application en production**
+
+Enfin, une fois l’environnement de **staging** déployé et testé, il ne reste plus qu’à déployer l’application sur l’environnement de production. Pour cela, vous allez une nouvelle fois modifier le fichier`.gitlab-ci.yml`afin d’ajouter l’étape de mise en production :
+
+```
+deploy_prod_job:
+  stage: deploy
+  image: alpine
+  script:
+    - apk add --no-cache docker-cli-compose
+    - export DOCKER_HOST=tcp://$PLAYWD.direct.labs.play-with-docker.com:2375
+    - docker compose down
+    - docker compose up -d
+  environment:
+    name: prod
+    url: http://$PLAYWD-8080.direct.labs.play-with-docker.com
+  when: manual
+
+```
+
+Dans cette étape, nous ajoutons le mot clé`when: manual`afin de ne déployer en production qu’avec l’intervention d’un être humain. La validation est requise afin de savoir s’il existe des erreurs lors du déploiement sur **staging**. Si des erreurs existent, il n’y aura alors pas de mise en production.
+
+Sur votre pipeline de livraison continue, le déploiement manuel est symbolisé par l’icône ▶️ à côté de l’étape`deploy_prod`.
+
+!https://user.oc-static.com/upload/2023/04/14/16814675155067_image37.png
+
+Le déploiement manuel sur GitLab CI
+
+Ces erreurs seront analysées lors de la prochaine étape : le **monitoring**.
+
+### **Déployez avec des techniques avancées**
+
+Enfin, une technique largement utilisée lors de l’utilisation de la livraison continue est le **Canary Release**.
+
+> 🐦 Le principe du Canary Release est le même que celui qui était utilisé dans les mines de charbon. À l’époque, les mineurs qui descendaient à la mine plaçaient un canari devant eux, au bout d’une perche dans une cage. Si le canari mourait, cela voulait dire que l’air était non respirable et les mineurs avaient alors le temps de rebrousser chemin afin d’éviter un sort fatal.
+> 
+
+Le principe est le même dans le déploiement : une partie seulement des utilisateurs va être redirigée vers la nouvelle version de production, et si quelque chose se passe mal, il n’y aura qu’une petite partie des utilisateurs qui sera impactée.
+
+Pour le mettre en place sur notre projet, modifiez le fichier`.gitlab-ci.yml`en ajoutant un nouveau bloc`canary`:
+
+```
+canary_job:
+  stage: canary
+  image: alpine
+  script:
+    - apk add --no-cache docker-cli-compose
+    - export DOCKER_HOST=tcp://$PLAYWD.direct.labs.play-with-docker.com:2375
+    - docker compose down
+    - docker compose up -d
+  environment:
+    name: prod
+    url: http://$PLAYWD-8080.direct.labs.play-with-docker.com
+  when: manual
+  only:
+    - main
+
+```
+
+Le principe ici est exactement le même que la production, la différence étant que le déploiement en canary est décorrélé de la production.
+
+Ensuite, modifiez le début du fichier afin que dans le bloc`stages`soit ajoutée l’étape`canary`:
+
+```
+stages:
+  - build
+  - test
+  - quality
+  - package
+  - canary
+  - deploy
+  - performance
+  - security
+
+```
+
+Nous avons maintenant un environnement qui se déploie en parallèle de la production et qui contient uniquement une sous-partie des utilisateurs. Cet environnement sera très utile afin de faire des analyses en temps réel du comportement de l’application et de voir s’il n’y a pas d’erreurs.
+
+Le pipeline de livraison continue est dorénavant complet, de la compilation du projet au déploiement sur un environnement de staging.
+
+Une autre technique existe aussi afin de pouvoir pousser en production des changements rapidement : le **déploiement Blue/Green**. Le principe de ce déploiement est d’intervertir grâce à un Load Balancer les environnements de staging et les environnements de production.
+
+Dans un déploiement **Blue/Green**, une fois l’environnement staging stabilisé avec la nouvelle version de l’application, il faut configurer le Load Balancer en frontal afin de rediriger le trafic de l’ancienne production vers l’environnement de staging. Ainsi, les utilisateurs seront automatiquement redirigés vers la nouvelle version de l’application. Si jamais des erreurs applicatives surviennent, le retour en arrière est facilité. Il suffira de configurer le Load Balancer de la nouvelle version applicative vers l’ancienne production qui est stable.
+
+Ces erreurs seront facilement détectables grâce au monitoring applicatif que nous verrons dans le cinquième chapitre de cette partie.
+
+Enfin, avec un pipeline correctement configuré, nous pouvons imaginer déployer deux versions en parallèle de l’application et tester quelle version est la plus efficace. Cette technique de déploiement est appelée **A/B testing** et permet de valider des hypothèses d’accessibilité, de nouvelles interfaces, ou alors de nouveaux modèles de Machine Learning.
+
+!https://user.oc-static.com/upload/2023/04/18/16818249233945_2C3-2.png
+
+Modélisation du A/B testing
+
+### **En résumé**
+
+- Déployer un environnement de staging permet de valider les changements faits dans l’application dans un environnement isoproduction.
+- Il existe plusieurs types de tests automatisés : les tests de performance, les tests d’acceptance, les smoke tests, les tests d’Infrastructure-as-Code et les tests de sécurité.
+- La méthode du Canary Release permet de déployer une nouvelle version de production à une partie seulement des utilisateurs de l’application.
+
+*Dans le prochain chapitre, vous découvrirez le métier de Site Reliability Engineer, comment maintenir en condition opérationnelle votre application avec les quatre signaux dorés et comment contrôler vos niveaux de service.*
