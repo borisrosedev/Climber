@@ -2,7 +2,7 @@
 	"arrowParens": "always",
 	"printWidth": 80,
 	"tabWidth": 2,
-	"proseWrap": "preserve",
+	"proseWrap": "never",
 	"trailingComma": "none",
 	"useTabs": true,
 	"semi": false,

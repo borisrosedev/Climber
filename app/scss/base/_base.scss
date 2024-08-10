@@ -41,6 +41,11 @@ img {
 	height: 100%;
 }
 
+#root {
+    display: flex;
+    flex-direction: column;
+}
+
 .custom-main {
 	display: flex;
 	padding-top: 8vh;

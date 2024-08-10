@@ -2,16 +2,24 @@
 
 .app-notification {
 	@include mixins.set-position(fixed, false);
-	& > small {
+    align-self: center;
+    z-index: 20;
+
+	& > p {
+        
+        background-color: rebeccapurple;
+        padding: 5px 30px;
+        border-radius: 5px;
 		@include mixins.set-anim(
-			0,
-			vertical,
-			vertical-notification,
-			0,
-			0,
-			1000,
-			0,
-			300px
-		);
+            0, 
+            vertical, 
+            vertical-notification, 
+            300px, 
+            0, 
+            300ms, 
+            0s, 
+            0px,
+            notif
+        );
 	}
 }

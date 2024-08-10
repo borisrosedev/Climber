@@ -6,18 +6,27 @@
 	}
 }
 
-@function change-position($val, $final) {
-	@if $val > 0 {
-		@return 0;
-	}
+@function change-position($val, $final, $context) {
 
-	@if $val < 0 {
-		@return 0;
-	}
+    @if $context == notif {
+        @return $final;
 
-	@if $val == 0 {
-		@return $final;
-	}
+    } @else {
+
+        @if $val > 0 {
+            @return 0;
+        }
+    
+        @if $val < 0 {
+            @return 0;
+        }
+    
+        @if $val == 0 {
+            @return $final;
+        }
+    
+    }
+
 
 	@return 0;
 }

@@ -1,0 +1,8 @@
+= Technique de déploiement A/B Testing
+
+Enfin, avec un pipeline correctement configuré, nous pouvons imaginer déployer deux versions en parallèle de l’application et tester quelle version est la plus efficace. 
+
+Cette technique de déploiement est appelée A/B testing et permet de valider:
+* des hypothèses d’accessibilité, 
+* de nouvelles interfaces
+* ou alors de nouveaux modèles de Machine Learning.

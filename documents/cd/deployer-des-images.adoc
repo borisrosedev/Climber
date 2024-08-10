@@ -1,5 +1,7 @@
 
-= Déployer les images précédemment compilées sur un environnement Docker, grâce au pipeline de livraison continue. 
+= Déployer les images 
+
+Déployer les précédemment compilées sur un environnement Docker, grâce au pipeline de livraison continue. 
 
 
 Puis, nous lancerons les tests grâce à la méthode **Canary Release**.

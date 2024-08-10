@@ -1,0 +1,8 @@
+@use "../abstracts/variables";
+
+.custom-field {
+    &__errors {
+       min-height: 10px; 
+       color: variables.$error-color;
+    }
+}

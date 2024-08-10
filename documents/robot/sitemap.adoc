@@ -1,0 +1,80 @@
+= Un sitemap
+
+Un sitemap (plan de site) est un fichier XML qui liste toutes les pages d'un site web, et fournit des informations supplémentaires sur chaque page, telles que la date de la dernière mise à jour, la fréquence de mise à jour et l'importance relative des pages. 
+
+
+Ce fichier aide les moteurs de recherche comme Google à explorer votre site de manière plus efficace, en s'assurant qu'ils ne manquent pas de pages importantes.
+
+== Pourquoi un Sitemap est Important
+
+=== Amélioration de l'exploration : 
+
+Un sitemap aide les moteurs de recherche à découvrir toutes les pages de votre site, y compris celles qui pourraient être difficiles à trouver via des liens internes.
+
+=== Priorisation des Pages : 
+
+Vous pouvez indiquer quelles pages sont les plus importantes sur votre site, ce qui peut influencer la manière dont les moteurs de recherche les indexent.
+
+=== Gestion des Fréquences de Mise à Jour : 
+
+En spécifiant la fréquence de mise à jour d'une page, vous aidez les moteurs de recherche à déterminer à quelle fréquence revisiter votre site pour y trouver des contenus nouveaux ou mis à jour.
+
+== Exemple de Sitemap XML
+
+Voici un exemple simple de fichier sitemap.xml :
+
+[source, xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+   <url>
+      <loc>https://www.example.com/</loc>
+      <lastmod>2024-01-01</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>1.0</priority>
+   </url>
+   <url>
+      <loc>https://www.example.com/about</loc>
+      <lastmod>2024-01-01</lastmod>
+      <changefreq>yearly</changefreq>
+      <priority>0.8</priority>
+   </url>
+   <url>
+      <loc>https://www.example.com/contact</loc>
+      <lastmod>2024-01-01</lastmod>
+      <changefreq>yearly</changefreq>
+      <priority>0.5</priority>
+   </url>
+</urlset>
+----
+
+== Comment Créer un Sitemap
+
+=== Manuellement : 
+
+Vous pouvez créer un sitemap en écrivant le fichier XML à la main, mais cela devient rapidement complexe pour les grands sites.
+
+=== Utilisation d'Outils en Ligne : 
+
+Il existe de nombreux outils en ligne gratuits qui peuvent générer un sitemap pour vous en explorant votre site.
+
+
+=== Automatisé via CMS : 
+
+Les CMS comme WordPress ont des plugins (comme Yoast SEO) qui génèrent automatiquement un sitemap et le mettent à jour chaque fois que vous ajoutez ou modifiez une page.
+
+=== Utilisation d'outils en ligne ou de scripts personnalisés : 
+
+Si vous avez un site statique ou une application web, vous pouvez utiliser des scripts ou des outils comme sitemap-generator-cli pour générer automatiquement un sitemap.
+
+
+== Soumettre un Sitemap à Google
+
+Une fois votre sitemap créé et placé à la racine de votre site (par exemple, https://www.example.com/sitemap.xml), vous pouvez le soumettre à Google via Google Search Console :
+
+* Connectez-vous à Google Search Console.
+* Sélectionnez votre site.
+* Dans le menu à gauche, cliquez sur "Sitemaps".
+* Entrez l'URL de votre sitemap (ex : sitemap.xml) et cliquez sur "Soumettre".
+
+

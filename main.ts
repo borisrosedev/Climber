@@ -2,7 +2,9 @@ import HomeContainer from "./app/ts/containers/home/home-container"
 import LogContainer from "./app/ts/containers/log/log-container"
 import OnNavigate from "./app/ts/types/on-navigate.type"
 import appHeader from "./app/ts/ui/layout/app-header"
+import appNotification from "./app/ts/ui/layout/app-notification"
 import homeView from "./app/ts/ui/views/home/home.view"
+import logView from "./app/ts/ui/views/log/log"
 import "./styles.scss"
 
 declare global {
@@ -19,9 +21,10 @@ function setNavHistory(h: string) {
 }
 
 function initializeRootInnerHTML() {
-	const root = document.getElementById("root")
+	const root = document.getElementById("root") as HTMLElement
 	root.innerHTML = ""
 	root.innerHTML += appHeader()
+    root.innerHTML += appNotification()
 	return root
 }
 
@@ -35,11 +38,16 @@ function navigateToPage(h: string) {
 			new HomeContainer(window.onNavigate)
 			break
 		case "#login":
-			new LogContainer(window.onNavigate, true)
+            root.innerHTML += logView(true)
+            new LogContainer(window.onNavigate, true)
 			break
+        case "#register":
+            root.innerHTML += logView(false)
+            new LogContainer(window.onNavigate, false)
+            break;
 		default:
-			break
-	}
+            break;
+    }
 }
 
 function router() {

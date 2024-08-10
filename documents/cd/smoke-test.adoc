@@ -1,0 +1,13 @@
+= Les smoke tests
+
+Les **smoke tests** sont des tests de base qui vérifient les fonctionnalités de base de l’application. 
+
+
+Ils sont conçus pour être rapides à exécuter et leur but est de vous donner l’assurance que les **principales caractéristiques de votre système fonctionnent comme prévu**. 
+
+
+Ils peuvent être utiles juste après une nouvelle build, pour décider si vous pouvez ou non exécuter des tests plus coûteux, ou juste après un déploiement pour s’assurer que l’application fonctionne correctement dans le nouvel environnement déployé.
+
+Par exemple, les smoke tests peuvent s’assurer que la base de données répond et est correctement configurée, mais aussi que les différents composants sont présents et envoient des données correctes, comme des API qui devraient répondre un code HTTP 200 ou une page web qui devrait s’afficher.
+
+Pour vous assurer du bon fonctionnement de l’application, vous pourrez utiliser **Selenium**, **SoapUI** ou **Cypress**.

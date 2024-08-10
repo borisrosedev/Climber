@@ -1,0 +1,51 @@
+= Déployer avec des techniques avancées**
+
+Enfin, une technique largement utilisée lors de l’utilisation de la livraison continue est le **Canary Release**.
+
+Le principe du Canary Release est le même que celui qui était utilisé dans les mines de charbon. 
+
+À l’époque, les mineurs qui descendaient à la mine plaçaient un canari devant eux, au bout d’une perche dans une cage. Si le canari mourait, cela voulait dire que l’air était non respirable et les mineurs avaient alors le temps de rebrousser chemin afin d’éviter un sort fatal.
+
+
+Le principe est le même dans le déploiement : une partie seulement des utilisateurs va être redirigée vers la nouvelle version de production, et si quelque chose se passe mal, il n’y aura qu’une petite partie des utilisateurs qui sera impactée.
+
+Pour le mettre en place sur notre projet, modifiez le fichier`.gitlab-ci.yml`en ajoutant un nouveau bloc`canary`:
+
+```
+canary_job:
+  stage: canary
+  image: alpine
+  script:
+    - apk add --no-cache docker-cli-compose
+    - export DOCKER_HOST=tcp://$PLAYWD.direct.labs.play-with-docker.com:2375
+    - docker compose down
+    - docker compose up -d
+  environment:
+    name: prod
+    url: http://$PLAYWD-8080.direct.labs.play-with-docker.com
+  when: manual
+  only:
+    - main
+
+```
+
+Le principe ici est exactement le même que la production, la différence étant que le déploiement en canary est décorrélé de la production.
+
+Ensuite, modifiez le début du fichier afin que dans le bloc`stages`soit ajoutée l’étape`canary`:
+
+```
+stages:
+  - build
+  - test
+  - quality
+  - package
+  - canary
+  - deploy
+  - performance
+  - security
+
+```
+
+Nous avons maintenant un environnement qui se déploie en parallèle de la production et qui contient uniquement une sous-partie des utilisateurs. Cet environnement sera très utile afin de faire des analyses en temps réel du comportement de l’application et de voir s’il n’y a pas d’erreurs.
+
+Le pipeline de livraison continue est dorénavant complet, de la compilation du projet au déploiement sur un environnement de staging.

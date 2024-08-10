@@ -1,0 +1,29 @@
+= Déployer en environnement de production**
+
+Enfin, une fois l’environnement de **staging** déployé et testé, il ne reste plus qu’à déployer l’application sur l’environnement de production. 
+
+Pour cela, vous allez une nouvelle fois modifier le fichier`.gitlab-ci.yml`afin d’ajouter l’étape de mise en production :
+
+```
+deploy_prod_job:
+  stage: deploy
+  image: alpine
+  script:
+    - apk add --no-cache docker-cli-compose
+    - export DOCKER_HOST=tcp://$PLAYWD.direct.labs.play-with-docker.com:2375
+    - docker compose down
+    - docker compose up -d
+  environment:
+    name: prod
+    url: http://$PLAYWD-8080.direct.labs.play-with-docker.com
+  when: manual
+
+```
+
+Dans cette étape, nous ajoutons le mot clé`when: manual`afin de ne déployer en production qu’avec l’intervention d’un être humain. La validation est requise afin de savoir s’il existe des erreurs lors du déploiement sur **staging**. Si des erreurs existent, il n’y aura alors pas de mise en production.
+
+Sur votre pipeline de livraison continue, le déploiement manuel est symbolisé par l’icône ▶️ à côté de l’étape`deploy_prod`.
+
+Le déploiement manuel sur GitLab CI
+
+Ces erreurs seront analysées lors de la prochaine étape : le **monitoring**.

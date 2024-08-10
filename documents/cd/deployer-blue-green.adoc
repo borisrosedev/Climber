@@ -1,0 +1,20 @@
+= déploiement Blue/Green
+
+Technique qui existe afin de pouvoir pousser en production des changements rapidement : le **déploiement Blue/Green**. 
+
+Le principe de ce déploiement est d’intervertir grâce à un Load Balancer les environnements de staging et les environnements de production.
+
+Dans un déploiement **Blue/Green**, une fois l’environnement staging stabilisé avec la nouvelle version de l’application, il faut configurer le Load Balancer en frontal afin de rediriger le trafic de l’ancienne production vers l’environnement de staging. 
+
+
+Ainsi, les utilisateurs seront automatiquement redirigés vers la nouvelle version de l’application. 
+
+Si jamais des erreurs applicatives surviennent, le retour en arrière est facilité. 
+
+
+Il suffira de configurer le Load Balancer de la nouvelle version applicative vers l’ancienne production qui est stable.
+
+Ces erreurs seront facilement détectables grâce au monitoring applicatif que nous verrons dans le cinquième chapitre de cette partie.
+
+
+

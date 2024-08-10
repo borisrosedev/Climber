@@ -33,7 +33,8 @@
 	$x: 0,
 	$time: 300ms,
 	$delay: 0ms,
-	$final
+	$final,
+    $context: none
 ) {
 	opacity: $alpha;
 	animation-name: $name;
@@ -50,18 +51,18 @@
 			}
 			to {
 				opacity: functions.inverse($alpha);
-				transform: translateY(functions.change-position($y, $final));
+				transform: translateY(functions.change-position($y, $final, $context));
 			}
 		}
 	} @else {
-		@keyframes #{name} {
+		@keyframes #{$name} {
 			from {
 				opacity: $alpha;
 				transform: translateX($x);
 			}
 			to {
 				opacity: functions.inverse($alpha);
-				transform: translateX(functions.change-position($x, $final));
+				transform: translateX(functions.change-position($x, $final, $context));
 			}
 		}
 	}

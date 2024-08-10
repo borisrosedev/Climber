@@ -8,7 +8,7 @@ function small(data: SmallProps): string {
 	return `
         <small id="${data.id ? data.id : ""}" class="custom-small ${data.classNames ? data.classNames : ""}">
             ${data.textContent}
-        </smail>
+        </small>
     `
 }
 

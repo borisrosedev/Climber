@@ -1,0 +1,10 @@
+= Les tests de sécurité**
+
+Les **tests de sécurité** sont des tests qui découvrent les vulnérabilités du système et déterminent que les données et les ressources du système sont protégées contre d’éventuels intrus. 
+
+
+Ils garantissent que le système et l’application logicielle sont exempts de toute menace ou tout risque pouvant entraîner une perte. 
+
+Le test de sécurité d’un système vise à trouver toutes les failles et faiblesses possibles du système qui pourraient entraîner la perte d’informations ou de réputation de l’organisation.
+
+Pour faire des tests de sécurité, vous pouvez utiliser **Wapiti**, **Snyk** ou **ZAP (Zed Attack Proxy) d’OWASP**.

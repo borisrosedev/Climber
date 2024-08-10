@@ -7,7 +7,7 @@ class FormatService {
 		)
 		const result = pattern.test(e)
 		if (!result) {
-			return "invalid email"
+			return "email invalide"
 		} else {
 			const splittedEmail = e.split("@")
 			const splittedEmailPartOne = splittedEmail[0]
@@ -16,28 +16,38 @@ class FormatService {
 				splittedEmailPartOne.length - 1
 			)
 			if (lastChar == "." || lastChar == "_") {
-				return "invalid email : ./_ before @"
+				return "email invalide - ./_ existe juste avant le @"
 			} else {
-				return "valid email"
+				return "email valide"
 			}
 		}
 	}
 
+    checkName(n: string) {
+        const pattern = new RegExp(/^[a-zïüûîéèà\-\ ]{2,20}$/i)
+        const result = pattern.test(n)
+        if (!result) {
+			return "invalide - seuls les espaces, traits d'union et lettres sont autorisés"
+		} else { 
+            return "valide"
+        }
+    }
+
 	checkPassword(p: string): string {
-		const pattern = new RegExp(/^[a-z0-9._ïüûîéèà$!?-_]{12, 20}$/i)
+		const pattern = new RegExp(/^[a-z0-9._ïüûîéèà$!?-_]{12,20}$/i)
 		const result = pattern.test(p)
 		if (!result) {
-			return "invalid password - must have at least 12 characters and at most 20"
+			return "mot de passe invalide - doit comprendre entre 12 et 20 caractères"
 		} else {
 			let counter = 0
 			for (const char of p) {
 				counter++
 				if (char == char.toUpperCase()) {
-					return "valid password"
+					return "mot de passe valide"
 				}
 
 				if (counter == p.length - 1) {
-					return "invalid password : no uppercase character"
+					return "mot de passe invalide - une majuscule est exigée"
 				}
 			}
 		}

@@ -1,5 +1,0 @@
-### **Lancez les tests automatisés**
-
-Maintenant que l’environnement **staging** est déployé, il est possible de lancer des tests impossibles à lancer lors de la phase d’intégration continue. Dans ce chapitre, nous allons lancer un **test de performance**, afin de mesurer les temps de réponse de l’application. 
-
-Pour ce faire, vous allez utiliser **Apache Benchmark** pour simuler de la charge sur le serveur.

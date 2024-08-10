@@ -10,17 +10,26 @@ module.exports = {
 	},
 	mode: "development",
 	resolve: {
-		extensions: [".ts", ".js", ".vue"]
+        extensions: [".mts", ".ts", ".js", ".vue"]
 	},
 	module: {
 		rules: [
+            {
+                test: /\.html$/,
+                use: 'raw-loader',
+                exclude: /node_modules/
+            },
 			{
 				test: /.ts$/,
-				use: "ts-loader"
+				use: "ts-loader",
+                exclude: /node_modules/
+
 			},
 			{
 				test: /.s[ac]ss$/,
-				use: ["style-loader", "css-loader", "sass-loader"]
+				use: ["style-loader", "css-loader", "sass-loader"],
+                exclude: /node_modules/
+
 			},
 			{
 				test: /.(png|jpe?g|git)$/,

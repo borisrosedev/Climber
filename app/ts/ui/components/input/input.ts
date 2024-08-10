@@ -7,19 +7,16 @@ interface InputProps {
 
 function input(data: InputProps) {
 	return `
-        <section class="control has-icons-left field__input">
-            <label for="${data.id}"></label>
-            <input
-                multiple="false" 
-                id="${data.id}"
-                name="${data.id}" 
-                type="${data.type ? data.type : "text"}"
-                placeholder="${data.placeholder}"
-                required
-                aria-required="true"
-            >
-        </section>
-    
+        <input
+            class="input"
+            data-testid="${data.id}"
+            id="${data.id}"
+            type="${data.type ? data.type : "text"}"
+            placeholder="${data.placeholder}"
+            required
+            aria-required="true"
+            multiple="false" 
+        >
     `
 }
 
